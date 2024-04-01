@@ -5,6 +5,7 @@ import { devtools } from "frog/dev";
 // import { neynar } from 'frog/hubs'
 import { handle } from "frog/next";
 import { serveStatic } from "frog/serve-static";
+import { abi } from "./abi.js";
 
 const app = new Frog({
   assetsPath: "/",
@@ -35,7 +36,13 @@ app.frame("/", (c) => {
         This is our first frame
       </div>
     ),
-    intents: [<Button>Go to the next frame</Button>,<Button.Link href='https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley'>Go to the video</Button.Link>],
+    intents: [
+      <Button>Go to the next frame</Button>,
+      <Button.Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley">
+        Go to the video
+      </Button.Link>,
+      <Button.Transaction target="/mint">Mint the NFT</Button.Transaction>
+    ],
   });
 });
 
@@ -58,6 +65,17 @@ app.frame("/second", (c) => {
       </div>
     ),
     intents: [<Button>Go to the next frame</Button>],
+  });
+});
+
+app.transaction("/mint", (c) => {
+  const { inputText } = c;
+
+  return c.contract({
+    abi,
+    chainId: "eip155:84532",
+    functionName: "mint",
+    to: "0xe5138d2B0f718871fe28B12Caa9c71432a7EfBC0",
   });
 });
 
